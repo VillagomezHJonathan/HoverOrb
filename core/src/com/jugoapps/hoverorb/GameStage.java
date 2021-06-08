@@ -5,31 +5,30 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 public class GameStage extends Stage {
-    private boolean visible = false;
+    private boolean visible = true;
 
-    public GameStage(Texture texture,
+    public GameStage(Texture ballTexture,
                      final StageInterface stageInterface) {
-        Table table = new Table();
-        table.setFillParent(true);
-        table.center();
 
-        Image image = new Image(texture);
-        image.addListener(new ClickListener() {
+        int halfWidth = Gdx.graphics.getWidth() / 2;
+
+        final Image ball = new Image(ballTexture);
+        ball.setSize(250, 250);
+        ball.setX(halfWidth - (ball.getWidth() / 2));
+        ball.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 setVisible(false);
                 stageInterface.goToHome();
+                return super.touchDown(event, x, y, pointer, button);
             }
         });
 
-        table.add(image);
-
-        addActor(table);
+        addActor(ball);
     }
 
     @Override

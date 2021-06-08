@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 public class StartStage extends Stage {
-    private boolean visible = true;
+    private boolean visible = false;
 
     public StartStage(Texture playBtnTexture,
                       Texture settingsBtnTexture,

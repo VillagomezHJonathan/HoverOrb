@@ -16,6 +16,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture homeBtn;
 	Texture themesBtn;
 	Texture ball;
+
 	
 	@Override
 	public void create () {
@@ -29,7 +30,10 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		gameStage = new GameStage(ball, this);
 		settingsStage = new SettingsStage(homeBtn, this);
 		themesStage = new ThemesStage(homeBtn, this);
-		Gdx.input.setInputProcessor(startStage);
+
+		/* Change this input processor to startStage and the booleans in
+		* GameStage.java and StartStage.java when done the gameStage */
+		Gdx.input.setInputProcessor(gameStage);
 	}
 
 	@Override
@@ -37,8 +41,11 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		ScreenUtils.clear(1, 0, 0, 1);
 
 		startStage.draw();
+
 		gameStage.draw();
+
 		settingsStage.draw();
+
 		themesStage.draw();
 	}
 
@@ -70,8 +77,11 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	public void dispose () {
 		startStage.dispose();
 		gameStage.dispose();
+		settingsStage.dispose();
+		themesStage.dispose();
 		playBtn.dispose();
 		settingsBtn.dispose();
+		themesBtn.dispose();
 		ball.dispose();
 	}
 
