@@ -17,9 +17,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture themesBtn;
 	Texture ball;
 
-	float gravity = 5;
-	float velocityY;
-
 	@Override
 	public void create () {
 		playBtn = new Texture("play_button.png");

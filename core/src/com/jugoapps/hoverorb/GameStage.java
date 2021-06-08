@@ -12,13 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
+
 public class GameStage extends Stage {
     private boolean visible = true;
 
     public static class BallActor extends Actor {
         Sprite ball = new Sprite(new Texture("ball.png"));
 
+        float screenCenterX = Gdx.graphics.getWidth();
+        float ballStartPosX;
+
         public BallActor() {
+            ball.setSize(200, 200);
+            ballStartPosX = screenCenterX / 2 - ball.getWidth() / 2;
+            ball.setPosition(ballStartPosX, 0);
             setBounds(ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
             setTouchable(Touchable.enabled);
 
@@ -26,8 +33,8 @@ public class GameStage extends Stage {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     MoveByAction mba = new MoveByAction();
-                    mba.setAmount(0f,100f);
-                    mba.setDuration(5f);
+                    mba.setAmount(0f,1000f);
+                    mba.setDuration(0.25f);
 
                     BallActor.this.addAction(mba);
 
