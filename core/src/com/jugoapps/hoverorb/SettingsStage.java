@@ -8,38 +8,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+public class SettingsStage extends Stage {
+    private boolean visible = false;
 
-public class StartStage extends Stage {
-    private boolean visible = true;
-
-    public StartStage(Texture playBtnTexture,
-                      Texture settingsBtnTexture,
-                      final StageInterface stageInterface) {
+    public SettingsStage (Texture homeBtnTexture,
+                          final StageInterface stageInterface) {
 
         Table table = new Table();
         table.setFillParent(true);
         table.center();
 
-        Image playBtn = new Image(playBtnTexture);
-        playBtn.addListener(new ClickListener() {
+        Image homeBtn = new Image(homeBtnTexture);
+        homeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setVisible(false);
-                stageInterface.startGame();
+                stageInterface.returnToStart();
             }
         });
 
-        Image settingsBtn = new Image(settingsBtnTexture);
-        settingsBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                setVisible(false);
-                stageInterface.goToSettings();
-            }
-        });
-
-        table.add(playBtn);
-        table.add(settingsBtn);
+        table.add(homeBtn);
 
         addActor(table);
     }
