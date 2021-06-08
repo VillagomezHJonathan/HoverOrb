@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
+
 	StartStage startStage;
 	GameStage gameStage;
 	SettingsStage settingsStage;
@@ -19,6 +20,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 	@Override
 	public void create () {
+
 		playBtn = new Texture("play_button.png");
 		settingsBtn = new Texture("settings_button.png");
 		homeBtn = new Texture("home_button.png");
@@ -37,6 +39,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 	@Override
 	public void render () {
+
 		ScreenUtils.clear(1, 0, 0, 1);
 
 		startStage.draw();
