@@ -1,7 +1,8 @@
 package com.jugoapps.hoverorb;
 
 public interface StageInterface {
-    void startGame();
-    void returnToStart();
+    void goToGameSetup();
+    void goToHome();
     void goToSettings();
+    void goToThemes();
 }

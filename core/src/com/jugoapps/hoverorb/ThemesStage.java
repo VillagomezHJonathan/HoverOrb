@@ -8,18 +8,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-
-public class GameStage extends Stage {
+public class ThemesStage extends Stage {
     private boolean visible = false;
 
-    public GameStage(Texture texture,
-                     final StageInterface stageInterface) {
+    public ThemesStage(Texture homeBtnTexture,
+                       final StageInterface stageInterface) {
+
         Table table = new Table();
         table.setFillParent(true);
-        table.center();
+        table.bottom();
 
-        Image image = new Image(texture);
-        image.addListener(new ClickListener() {
+        Image homeBtn = new Image(homeBtnTexture);
+        homeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setVisible(false);
@@ -27,7 +27,7 @@ public class GameStage extends Stage {
             }
         });
 
-        table.add(image);
+        table.add(homeBtn);
 
         addActor(table);
     }

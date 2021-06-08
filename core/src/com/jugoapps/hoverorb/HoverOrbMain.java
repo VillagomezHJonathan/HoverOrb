@@ -9,10 +9,12 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	StartStage startStage;
 	GameStage gameStage;
 	SettingsStage settingsStage;
+	ThemesStage themesStage;
 
 	Texture playBtn;
 	Texture settingsBtn;
 	Texture homeBtn;
+	Texture themesBtn;
 	Texture ball;
 	
 	@Override
@@ -20,11 +22,13 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		playBtn = new Texture("play_button.png");
 		settingsBtn = new Texture("settings_button.png");
 		homeBtn = new Texture("home_button.png");
+		themesBtn = new Texture("themes_button.png");
 		ball = new Texture("ball.png");
 
-		startStage = new StartStage(playBtn, settingsBtn, this);
+		startStage = new StartStage(playBtn, settingsBtn, themesBtn, this);
 		gameStage = new GameStage(ball, this);
 		settingsStage = new SettingsStage(homeBtn, this);
+		themesStage = new ThemesStage(homeBtn, this);
 		Gdx.input.setInputProcessor(startStage);
 	}
 
@@ -35,16 +39,17 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		startStage.draw();
 		gameStage.draw();
 		settingsStage.draw();
+		themesStage.draw();
 	}
 
 	@Override
-	public void startGame() {
+	public void goToGameSetup() {
 		gameStage.setVisible(true);
 		Gdx.input.setInputProcessor(gameStage);
 	}
 
 	@Override
-	public void returnToStart() {
+	public void goToHome() {
 		startStage.setVisible(true);
 		Gdx.input.setInputProcessor(startStage);
 	}
@@ -53,6 +58,12 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	public void goToSettings() {
 		settingsStage.setVisible(true);
 		Gdx.input.setInputProcessor(settingsStage);
+	}
+
+	@Override
+	public void goToThemes() {
+		themesStage.setVisible(true);
+		Gdx.input.setInputProcessor(themesStage);
 	}
 
 	@Override

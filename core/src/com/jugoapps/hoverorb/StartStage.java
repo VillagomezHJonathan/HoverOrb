@@ -14,6 +14,7 @@ public class StartStage extends Stage {
 
     public StartStage(Texture playBtnTexture,
                       Texture settingsBtnTexture,
+                      Texture themesBtnTexture,
                       final StageInterface stageInterface) {
 
         Table table = new Table();
@@ -25,7 +26,7 @@ public class StartStage extends Stage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setVisible(false);
-                stageInterface.startGame();
+                stageInterface.goToGameSetup();
             }
         });
 
@@ -38,8 +39,18 @@ public class StartStage extends Stage {
             }
         });
 
+        Image themesBtn = new Image(themesBtnTexture);
+        themesBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setVisible(false);
+                stageInterface.goToThemes();
+            }
+        });
+
         table.add(playBtn);
         table.add(settingsBtn);
+        table.add(themesBtn);
 
         addActor(table);
     }

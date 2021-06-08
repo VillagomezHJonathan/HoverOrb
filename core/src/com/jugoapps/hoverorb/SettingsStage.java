@@ -23,7 +23,7 @@ public class SettingsStage extends Stage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setVisible(false);
-                stageInterface.returnToStart();
+                stageInterface.goToHome();
             }
         });
 
