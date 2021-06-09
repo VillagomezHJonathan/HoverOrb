@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,6 +22,15 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 	GameStage gameStage;
 	Actor ball;
+	float screenHeight;
+	float screenWidth;
+	float ballY;
+	float ballX;
+	float gravity;
+	float velocityY;
+	float velocityX;
+	int maxVelocityX;
+	float forceY;
 
 	SettingsStage settingsStage;
 
@@ -31,16 +41,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture homeBtnTexture;
 	Texture themesBtnTexture;
 	Texture ballTexture;
-
-	float screenHeight;
-	float screenWidth;
-	float ballY;
-	float ballX;
-	float gravity;
-	float velocityY;
-	float velocityX;
-	int maxVelocityX;
-	float forceY;
 
 	@Override
 	public void create () {
@@ -75,6 +75,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		gravity = 5;
 		maxVelocityX = 8;
 		forceY = 100;
+
 	}
 
 	@Override
@@ -102,7 +103,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 			velocityX *= -1;
 			ballX += 1;
 		}
-
 		ball.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -120,6 +120,14 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 				return super.touchDown(event, x, y, pointer, button);
 			}
 		});
+		RotateByAction rotate = new RotateByAction();
+		rotate.setAmount(-4f);
+		if (ballY > 0){
+			ball.addAction(rotate);
+		} else {
+			ball.removeAction(rotate);
+		}
+
 
 		settingsStage.draw();
 
