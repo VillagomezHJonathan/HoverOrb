@@ -24,7 +24,7 @@ public class BallActor extends Image {
 
         setSize(250, 250);
         ballStartPosX = screenCenterX / 2 - getWidth() / 2;
-        setX(ballStartPosX);
+        setPosition(ballStartPosX, 0f);
         setBounds(getX(), getY(), getWidth(), getHeight());
 
     }

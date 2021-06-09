@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.Random;
+
 public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 	ScreenViewport screenViewport;
@@ -30,17 +32,25 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture themesBtnTexture;
 	Texture ballTexture;
 
+	float screenHeight;
+	float screenWidth;
 	float ballY;
+	float ballX;
 	float gravity;
 	float velocityY;
+	float velocityX;
+	int maxVelocityX;
 	float forceY;
 
 	@Override
 	public void create () {
 
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
+
 		screenViewport = new ScreenViewport();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(screenWidth, screenHeight);
+		camera.setToOrtho(false, screenWidth, screenHeight);
 
 		playBtnTexture = new Texture("play_button.png");
 		settingsBtnTexture = new Texture("settings_button.png");
@@ -62,8 +72,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
 
-		ballY = 0;
 		gravity = 5;
+		maxVelocityX = 8;
 		forceY = 100;
 	}
 
@@ -77,15 +87,36 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		gameStage.draw();
 		velocityY += gravity;
 		ballY -= velocityY;
-		ball.setPosition(ball.getX(), ballY);
+		ballX += velocityX;
+		ball.setPosition(ballX, ballY);
 		if (ball.getY() <= 0) {
 			ballY = 0;
 			velocityY = 0;
+			velocityX = 0;
+		} else if (ball.getY() + ball.getHeight() > screenHeight) {
+			velocityY *= -1;
+		} else if (ball.getX() + ball.getWidth() > screenWidth) {
+			velocityX *= -1;
+			ballX -= 1;
+		} else if (ball.getX() <= 0) {
+			velocityX *= -1;
+			ballX += 1;
 		}
+
 		ball.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				velocityY = -forceY;
+
+				Random random = new Random();
+				float randomDirection = random.nextInt(2) +1;
+				velocityX = (float) random.nextInt(maxVelocityX) +1;
+
+				if (randomDirection == 1) {
+					velocityX *= -2;
+				} else if (randomDirection == 2) {
+					velocityX *= 2;
+				}
 				return super.touchDown(event, x, y, pointer, button);
 			}
 		});
