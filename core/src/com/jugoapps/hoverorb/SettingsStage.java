@@ -34,8 +34,8 @@ public class SettingsStage extends Stage {
 
     @Override
     public void draw() {
-        act(Gdx.graphics.getDeltaTime());
         if (visible) {
+            act(Gdx.graphics.getDeltaTime());
             super.draw();
         }
     }

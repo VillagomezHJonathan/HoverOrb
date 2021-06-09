@@ -2,24 +2,16 @@ package com.jugoapps.hoverorb;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.Random;
 
 public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
-
-	ScreenViewport screenViewport;
-	OrthographicCamera camera;
-
-	Preferences preferences;
 
 	StartStage startStage;
 
@@ -44,7 +36,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture settingsBtnTexture;
 	Texture homeBtnTexture;
 	Texture themesBtnTexture;
-	Texture pauseBtnTexture;
 	Texture ballTexture;
 
 	@Override
@@ -52,12 +43,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
-
-		screenViewport = new ScreenViewport();
-		camera = new OrthographicCamera(screenWidth, screenHeight);
-		camera.setToOrtho(false, screenWidth, screenHeight);
-
-		preferences = Gdx.app.getPreferences("prefs");
 
 		playBtnTexture = new Texture("play_button.png");
 		settingsBtnTexture = new Texture("settings_button.png");
@@ -68,7 +53,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		startStage = new StartStage(playBtnTexture, settingsBtnTexture,
 				themesBtnTexture, this);
 
-		gameStage = new GameStage(ballTexture, pauseBtnTexture, this);
+		gameStage = new GameStage(ballTexture, this);
 		ball = gameStage.getActors().get(0);
 		gravity = 5;
 		maxVelocityX = 8;
@@ -81,12 +66,31 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		/* Change this input processor to startStage and the booleans in
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
+
+		ball.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				velocityY = -forceY;
+
+				Random random = new Random();
+				randomDirectionX = random.nextInt(2) +1;
+				velocityX = (float) random.nextInt(maxVelocityX) +1;
+
+				if (randomDirectionX == 1) {
+					velocityX *= -2;
+				} else if (randomDirectionX == 2) {
+					velocityX *= 2;
+				}
+				return true;
+			}
+		});
 	}
 
 	@Override
 	public void render () {
 
 		ScreenUtils.clear(1, 0, 0, 1);
+
 
 		startStage.draw();
 
@@ -108,23 +112,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 			velocityX *= -1;
 			ballX += 1;
 		}
-		ball.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				velocityY = -forceY;
 
-				Random random = new Random();
-				randomDirectionX = random.nextInt(2) +1;
-				velocityX = (float) random.nextInt(maxVelocityX) +1;
-
-				if (randomDirectionX == 1) {
-					velocityX *= -2;
-				} else if (randomDirectionX == 2) {
-					velocityX *= 2;
-				}
-				return super.touchDown(event, x, y, pointer, button);
-			}
-		});
 		RotateByAction rotateLeft = new RotateByAction();
 		rotateLeft.setAmount(4f);
 		RotateByAction rotateRight = new RotateByAction();
@@ -149,32 +137,24 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	@Override
 	public void goToGameSetup() {
 		gameStage.setVisible(true);
-		gameStage.setViewport(screenViewport);
-		gameStage.getBatch().setProjectionMatrix(camera.combined);
 		Gdx.input.setInputProcessor(gameStage);
 	}
 
 	@Override
 	public void goToHome() {
 		startStage.setVisible(true);
-		startStage.setViewport(screenViewport);
-		startStage.getBatch().setProjectionMatrix(camera.combined);
 		Gdx.input.setInputProcessor(startStage);
 	}
 
 	@Override
 	public void goToSettings() {
 		settingsStage.setVisible(true);
-		settingsStage.setViewport(screenViewport);
-		settingsStage.getBatch().setProjectionMatrix(camera.combined);
 		Gdx.input.setInputProcessor(settingsStage);
 	}
 
 	@Override
 	public void goToThemes() {
 		themesStage.setVisible(true);
-		themesStage.setViewport(screenViewport);
-		themesStage.getBatch().setProjectionMatrix(camera.combined);
 		Gdx.input.setInputProcessor(themesStage);
 	}
 

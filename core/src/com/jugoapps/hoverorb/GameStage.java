@@ -6,11 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
 public class GameStage extends Stage {
-
     private boolean visible = true;
 
     public GameStage(Texture ballTexture,
-                     Texture pauseBtnTexture,
                      final StageInterface stageInterface) {
 
         BallActor ball = new BallActor(ballTexture);
@@ -20,9 +18,8 @@ public class GameStage extends Stage {
 
     @Override
     public void draw() {
-
-        act(Gdx.graphics.getDeltaTime());
         if (visible) {
+            act(Gdx.graphics.getDeltaTime());
             super.draw();
         }
     }
