@@ -2,6 +2,7 @@ package com.jugoapps.hoverorb;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,6 +19,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	ScreenViewport screenViewport;
 	OrthographicCamera camera;
 
+	Preferences preferences;
+
 	StartStage startStage;
 
 	GameStage gameStage;
@@ -29,8 +32,9 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	float gravity;
 	float velocityY;
 	float velocityX;
-	int maxVelocityX;
+	float randomDirectionX;
 	float forceY;
+	int maxVelocityX;
 
 	SettingsStage settingsStage;
 
@@ -40,6 +44,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture settingsBtnTexture;
 	Texture homeBtnTexture;
 	Texture themesBtnTexture;
+	Texture pauseBtnTexture;
 	Texture ballTexture;
 
 	@Override
@@ -52,6 +57,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		camera = new OrthographicCamera(screenWidth, screenHeight);
 		camera.setToOrtho(false, screenWidth, screenHeight);
 
+		preferences = Gdx.app.getPreferences("prefs");
+
 		playBtnTexture = new Texture("play_button.png");
 		settingsBtnTexture = new Texture("settings_button.png");
 		homeBtnTexture = new Texture("home_button.png");
@@ -61,8 +68,11 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		startStage = new StartStage(playBtnTexture, settingsBtnTexture,
 				themesBtnTexture, this);
 
-		gameStage = new GameStage(ballTexture, this);
+		gameStage = new GameStage(ballTexture, pauseBtnTexture, this);
 		ball = gameStage.getActors().get(0);
+		gravity = 5;
+		maxVelocityX = 8;
+		forceY = 100;
 
 		settingsStage = new SettingsStage(homeBtnTexture, this);
 
@@ -71,11 +81,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		/* Change this input processor to startStage and the booleans in
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
-
-		gravity = 5;
-		maxVelocityX = 8;
-		forceY = 100;
-
 	}
 
 	@Override
@@ -109,25 +114,32 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 				velocityY = -forceY;
 
 				Random random = new Random();
-				float randomDirection = random.nextInt(2) +1;
+				randomDirectionX = random.nextInt(2) +1;
 				velocityX = (float) random.nextInt(maxVelocityX) +1;
 
-				if (randomDirection == 1) {
+				if (randomDirectionX == 1) {
 					velocityX *= -2;
-				} else if (randomDirection == 2) {
+				} else if (randomDirectionX == 2) {
 					velocityX *= 2;
 				}
 				return super.touchDown(event, x, y, pointer, button);
 			}
 		});
-		RotateByAction rotate = new RotateByAction();
-		rotate.setAmount(-4f);
-		if (ballY > 0){
-			ball.addAction(rotate);
-		} else {
-			ball.removeAction(rotate);
+		RotateByAction rotateLeft = new RotateByAction();
+		rotateLeft.setAmount(4f);
+		RotateByAction rotateRight = new RotateByAction();
+		rotateRight.setAmount(-4f);
+		if (ball.getY() > 0 && randomDirectionX == 1) {
+			ball.addAction(rotateLeft);
+			if (ball.getActions().contains(rotateRight, true)) {
+				ball.removeAction(rotateRight);
+			}
+		} else if (ball.getY() > 0 && randomDirectionX == 2) {
+			ball.addAction(rotateRight);
+			if (ball.getActions().contains(rotateLeft, true)) {
+				ball.removeAction(rotateLeft);
+			}
 		}
-
 
 		settingsStage.draw();
 

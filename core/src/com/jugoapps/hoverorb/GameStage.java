@@ -10,9 +10,11 @@ public class GameStage extends Stage {
     private boolean visible = true;
 
     public GameStage(Texture ballTexture,
+                     Texture pauseBtnTexture,
                      final StageInterface stageInterface) {
 
         BallActor ball = new BallActor(ballTexture);
+
         addActor(ball);
     }
 
