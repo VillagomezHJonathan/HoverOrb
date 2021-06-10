@@ -39,6 +39,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Texture homeBtnTexture;
 	Texture themesBtnTexture;
 	Texture pauseBtnTexture;
+	Texture resetBtnTexture;
+	Texture applyBtnTexture;
 	Texture ballTexture;
 
 	@Override
@@ -51,6 +53,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		homeBtnTexture = new Texture("home_button.png");
 		themesBtnTexture = new Texture("themes_button.png");
 		pauseBtnTexture = new Texture("pause_button.png");
+		resetBtnTexture = new Texture("reset_button.png");
+		applyBtnTexture = new Texture("apply_button.png");
 		ballTexture = new Texture("ball.png");
 
 		startStage = new StartStage(playBtnTexture, settingsBtnTexture,
@@ -66,9 +70,9 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 		settingsStage = new SettingsStage(homeBtnTexture, this);
 
-		themesStage = new ThemesStage(homeBtnTexture, this);
+		themesStage = new ThemesStage(applyBtnTexture, this);
 
-		endStage = new EndStage(homeBtnTexture, this);
+		endStage = new EndStage(homeBtnTexture, resetBtnTexture, this);
 
 		/* Change this input processor and viewport to startStage and the booleans in
 		* GameStage.java and StartStage.java when done the gameStage */

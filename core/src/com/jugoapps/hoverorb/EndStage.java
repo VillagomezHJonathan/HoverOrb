@@ -12,6 +12,7 @@ public class EndStage extends Stage {
     private boolean visible = false;
 
     public EndStage(Texture homeBtnTexture,
+                    Texture resetBtnTexture,
                     final StageInterface stageInterface) {
 
         Table table = new Table();
@@ -27,7 +28,17 @@ public class EndStage extends Stage {
             }
         });
 
+        Image resetBtn = new Image(resetBtnTexture);
+        resetBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setVisible(false);
+                stageInterface.goToGameSetup();
+            }
+        });
+
         table.add(homeBtn);
+        table.add(resetBtn);
 
         addActor(table);
     }
