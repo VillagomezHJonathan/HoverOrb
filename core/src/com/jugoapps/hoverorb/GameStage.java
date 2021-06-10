@@ -22,6 +22,7 @@ public class GameStage extends Stage {
         ball.setName("ball");
 
         Image pauseBtn = new Image(pauseBtnTexture);
+        pauseBtn.setName("pauseBtn");
         pauseBtn.setSize(125, 125);
         pausePosX = getWidth() - pauseBtn.getWidth();
         pausePosY = getHeight() - pauseBtn.getHeight();

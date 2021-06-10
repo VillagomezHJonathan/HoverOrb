@@ -17,16 +17,19 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 	GameStage gameStage;
 	Actor ball;
+	Actor pauseBtn;
+	int gameState;
+	int maxVelocityX;
 	float screenHeight;
 	float screenWidth;
 	float ballY;
 	float ballX;
+	float ballStartingPosX;
 	float gravity;
 	float velocityY;
 	float velocityX;
 	float randomDirectionX;
 	float forceY;
-	int maxVelocityX;
 
 	SettingsStage settingsStage;
 
@@ -62,8 +65,10 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 		gameStage = new GameStage(ballTexture, pauseBtnTexture, this);
 		ball = gameStage.getRoot().findActor("ball");
+		pauseBtn = gameStage.getRoot().findActor("pauseBtn");
 		ballY = ball.getY();
 		ballX = ball.getX();
+		ballStartingPosX = screenWidth / 2 - ball.getWidth() / 2;
 		gravity = 5;
 		maxVelocityX = 8;
 		forceY = 100;
@@ -78,9 +83,13 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
 
+		gameState = 0;
 		ball.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				gameState = 1;
+				pauseBtn.remove();
+
 				velocityY = -forceY;
 
 				Random random = new Random();
@@ -109,11 +118,18 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		ballY -= velocityY;
 		ballX += velocityX;
 		ball.setPosition(ballX, ballY);
-		if (ball.getY() <= 0) {
+		if (gameState == 0) {
+			gameStage.addActor(pauseBtn);
 			ballY = 0;
+			ballX = ballStartingPosX;
 			velocityY = 0;
 			velocityX = 0;
-		} else if (ball.getY() + ball.getHeight() > screenHeight) {
+		} else if (gameState == 1 && ball.getY() <= 0) {
+			gameStage.setVisible(false);
+			goToEnd();
+			gameState = 0;
+		}
+		if (ball.getY() + ball.getHeight() > screenHeight) {
 			velocityY *= -1;
 		} else if (ball.getX() + ball.getWidth() > screenWidth) {
 			velocityX *= -1;
