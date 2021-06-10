@@ -32,15 +32,17 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 	ThemesStage themesStage;
 
+	EndStage endStage;
+
 	Texture playBtnTexture;
 	Texture settingsBtnTexture;
 	Texture homeBtnTexture;
 	Texture themesBtnTexture;
+	Texture pauseBtnTexture;
 	Texture ballTexture;
 
 	@Override
 	public void create () {
-
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 
@@ -48,13 +50,16 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		settingsBtnTexture = new Texture("settings_button.png");
 		homeBtnTexture = new Texture("home_button.png");
 		themesBtnTexture = new Texture("themes_button.png");
+		pauseBtnTexture = new Texture("pause_button.png");
 		ballTexture = new Texture("ball.png");
 
 		startStage = new StartStage(playBtnTexture, settingsBtnTexture,
 				themesBtnTexture, this);
 
-		gameStage = new GameStage(ballTexture, this);
-		ball = gameStage.getActors().get(0);
+		gameStage = new GameStage(ballTexture, pauseBtnTexture, this);
+		ball = gameStage.getRoot().findActor("ball");
+		ballY = ball.getY();
+		ballX = ball.getX();
 		gravity = 5;
 		maxVelocityX = 8;
 		forceY = 100;
@@ -63,7 +68,9 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 		themesStage = new ThemesStage(homeBtnTexture, this);
 
-		/* Change this input processor to startStage and the booleans in
+		endStage = new EndStage(homeBtnTexture, this);
+
+		/* Change this input processor and viewport to startStage and the booleans in
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
 
@@ -84,13 +91,12 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 				return true;
 			}
 		});
+
 	}
 
 	@Override
 	public void render () {
-
 		ScreenUtils.clear(1, 0, 0, 1);
-
 
 		startStage.draw();
 
@@ -112,7 +118,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 			velocityX *= -1;
 			ballX += 1;
 		}
-
 		RotateByAction rotateLeft = new RotateByAction();
 		rotateLeft.setAmount(4f);
 		RotateByAction rotateRight = new RotateByAction();
@@ -132,6 +137,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		settingsStage.draw();
 
 		themesStage.draw();
+
+		endStage.draw();
 	}
 
 	@Override
@@ -156,6 +163,12 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	public void goToThemes() {
 		themesStage.setVisible(true);
 		Gdx.input.setInputProcessor(themesStage);
+	}
+
+	@Override
+	public void goToEnd() {
+		endStage.setVisible(true);
+		Gdx.input.setInputProcessor(endStage);
 	}
 
 	@Override

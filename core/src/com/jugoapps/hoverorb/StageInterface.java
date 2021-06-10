@@ -5,4 +5,5 @@ public interface StageInterface {
     void goToHome();
     void goToSettings();
     void goToThemes();
+    void goToEnd();
 }
