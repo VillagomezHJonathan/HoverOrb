@@ -23,10 +23,10 @@ public class GameStage extends Stage {
 
         Image pauseBtn = new Image(pauseBtnTexture);
         pauseBtn.setName("pauseBtn");
-        pauseBtn.setSize(125, 125);
+        pauseBtn.setSize(125f, 125f);
         pausePosX = getWidth() - pauseBtn.getWidth();
         pausePosY = getHeight() - pauseBtn.getHeight();
-        pauseBtn.setPosition(pausePosX - 10, pausePosY - 10);
+        pauseBtn.setPosition(pausePosX - 10f, pausePosY - 10f);
         pauseBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -42,14 +42,13 @@ public class GameStage extends Stage {
     @Override
     public void draw() {
         if (visible) {
-            getBatch().setProjectionMatrix(getCamera().combined);
             act(Gdx.graphics.getDeltaTime());
             super.draw();
         }
     }
 
     public void setVisible(boolean visible) {
-
         this.visible = visible;
     }
+
 }

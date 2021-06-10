@@ -3,6 +3,8 @@ package com.jugoapps.hoverorb;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
@@ -18,7 +20,10 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	GameStage gameStage;
 	Actor ball;
 	Actor pauseBtn;
+	BitmapFont liveScoreFont;
+	int scoreFontSize;
 	int gameState;
+	int currentScore;
 	int maxVelocityX;
 	float screenHeight;
 	float screenWidth;
@@ -68,10 +73,10 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		pauseBtn = gameStage.getRoot().findActor("pauseBtn");
 		ballY = ball.getY();
 		ballX = ball.getX();
-		ballStartingPosX = screenWidth / 2 - ball.getWidth() / 2;
-		gravity = 5;
+		ballStartingPosX = screenWidth / 2f - ball.getWidth() / 2f;
+		gravity = 5f;
 		maxVelocityX = 8;
-		forceY = 100;
+		forceY = 100f;
 
 		settingsStage = new SettingsStage(homeBtnTexture, this);
 
@@ -83,28 +88,39 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
 
+		liveScoreFont = new BitmapFont();
+		scoreFontSize = 200;
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.size = scoreFontSize;
+		liveScoreFont = generator.generateFont(parameter);
+		generator.dispose();
+
 		gameState = 0;
 		ball.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if (gameState == 1) {
+					currentScore++;
+				}
+
 				gameState = 1;
 				pauseBtn.remove();
 
 				velocityY = -forceY;
 
 				Random random = new Random();
-				randomDirectionX = random.nextInt(2) +1;
-				velocityX = (float) random.nextInt(maxVelocityX) +1;
+				randomDirectionX = random.nextInt(2) + 1;
+				velocityX = (float) random.nextInt(maxVelocityX) + 1;
 
 				if (randomDirectionX == 1) {
-					velocityX *= -2;
+					velocityX *= -2f;
 				} else if (randomDirectionX == 2) {
-					velocityX *= 2;
+					velocityX *= 2f;
 				}
 				return true;
 			}
 		});
-
 	}
 
 	@Override
@@ -114,40 +130,47 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		startStage.draw();
 
 		gameStage.draw();
+		gameStage.getBatch().begin();
+		if (gameState == 1) {
+			liveScoreFont.draw(gameStage.getBatch(), String.valueOf(currentScore), 30f, screenHeight - 30f);
+		}
+		gameStage.getBatch().end();
 		velocityY += gravity;
 		ballY -= velocityY;
 		ballX += velocityX;
 		ball.setPosition(ballX, ballY);
 		if (gameState == 0) {
 			gameStage.addActor(pauseBtn);
-			ballY = 0;
+			currentScore = 0;
+			ballY = 0f;
 			ballX = ballStartingPosX;
-			velocityY = 0;
-			velocityX = 0;
-		} else if (gameState == 1 && ball.getY() <= 0) {
+			ball.setRotation(0f);
+			velocityY = 0f;
+			velocityX = 0f;
+		} else if (gameState == 1 && ball.getY() <= 0f) {
 			gameStage.setVisible(false);
 			goToEnd();
 			gameState = 0;
 		}
 		if (ball.getY() + ball.getHeight() > screenHeight) {
-			velocityY *= -1;
+			velocityY *= -1f;
 		} else if (ball.getX() + ball.getWidth() > screenWidth) {
-			velocityX *= -1;
-			ballX -= 1;
-		} else if (ball.getX() <= 0) {
-			velocityX *= -1;
-			ballX += 1;
+			velocityX *= -1f;
+			ballX -= 1f;
+		} else if (ball.getX() <= 0f) {
+			velocityX *= -1f;
+			ballX += 1f;
 		}
 		RotateByAction rotateLeft = new RotateByAction();
 		rotateLeft.setAmount(4f);
 		RotateByAction rotateRight = new RotateByAction();
 		rotateRight.setAmount(-4f);
-		if (ball.getY() > 0 && randomDirectionX == 1) {
+		if (ball.getY() > 0f && randomDirectionX == 1) {
 			ball.addAction(rotateLeft);
 			if (ball.getActions().contains(rotateRight, true)) {
 				ball.removeAction(rotateRight);
 			}
-		} else if (ball.getY() > 0 && randomDirectionX == 2) {
+		} else if (ball.getY() > 0f && randomDirectionX == 2) {
 			ball.addAction(rotateRight);
 			if (ball.getActions().contains(rotateLeft, true)) {
 				ball.removeAction(rotateLeft);

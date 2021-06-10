@@ -14,9 +14,9 @@ public class BallActor extends Image {
     public BallActor(Texture ballTexture) {
         super(ballTexture);
 
-        setSize(250, 250);
-        setOrigin(getWidth() / 2, getHeight() / 2);
-        ballStartPosX = screenWidth / 2 - getWidth() / 2;
+        setSize(250f, 250f);
+        setOrigin(getWidth() / 2f, getHeight() / 2f);
+        ballStartPosX = screenWidth / 2f - getWidth() / 2f;
         setPosition(ballStartPosX, 0f);
         setBounds(getX(), getY(), getWidth(), getHeight());
 
