@@ -51,4 +51,8 @@ public class GameStage extends Stage {
         this.visible = visible;
     }
 
+    public boolean isVisible() {
+        return this.visible;
+    }
+
 }

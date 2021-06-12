@@ -56,6 +56,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 
+		/* TEXTURES */
 		playBtnTexture = new Texture("play_button.png");
 		settingsBtnTexture = new Texture("settings_button.png");
 		homeBtnTexture = new Texture("home_button.png");
@@ -65,6 +66,16 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		applyBtnTexture = new Texture("apply_button.png");
 		ballTexture = new Texture("ball.png");
 
+		/* FONTS */
+		liveScoreFont = new BitmapFont();
+		scoreFontSize = 200;
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.size = scoreFontSize;
+		liveScoreFont = generator.generateFont(parameter);
+		generator.dispose();
+
+		/* STAGES */
 		startStage = new StartStage(playBtnTexture, settingsBtnTexture,
 				themesBtnTexture, this);
 
@@ -87,14 +98,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		/* Change this input processor and viewport to startStage and the booleans in
 		* GameStage.java and StartStage.java when done the gameStage */
 		Gdx.input.setInputProcessor(gameStage);
-
-		liveScoreFont = new BitmapFont();
-		scoreFontSize = 200;
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = scoreFontSize;
-		liveScoreFont = generator.generateFont(parameter);
-		generator.dispose();
 
 		gameState = 0;
 		ball.addListener(new ClickListener() {
@@ -130,15 +133,18 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		startStage.draw();
 
 		gameStage.draw();
-		gameStage.getBatch().begin();
-		if (gameState == 1) {
-			liveScoreFont.draw(gameStage.getBatch(), String.valueOf(currentScore), 30f, screenHeight - 30f);
-		}
-		gameStage.getBatch().end();
 		ballMovement();
-		ballGameState();
-		ballBoundaries();
-		ballAnimation();
+		if (gameStage.isVisible()) {
+
+			gameStage.getBatch().begin();
+			if (gameState == 1) {
+				liveScoreFont.draw(gameStage.getBatch(), String.valueOf(currentScore), 30f, screenHeight - 30f);
+			}
+			gameStage.getBatch().end();
+			ballGameStateCheck();
+			ballBoundaries();
+			ballAnimation();
+		}
 
 		settingsStage.draw();
 
@@ -166,15 +172,15 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		ball.setPosition(ballX, ballY);
 	}
 
-	public void ballGameState() {
+	public void ballGameStateCheck() {
 		if (gameState == 0) {
 			gameStage.addActor(pauseBtn);
 			currentScore = 0;
-			ballY = 0f;
 			ballX = ballStartingPosX;
-			ball.setRotation(0f);
+			ballY = 0f;
 			velocityY = 0f;
 			velocityX = 0f;
+			ball.setRotation(0f);
 		} else if (gameState == 1 && ball.getY() <= 0f) {
 			gameStage.setVisible(false);
 			goToEnd();
