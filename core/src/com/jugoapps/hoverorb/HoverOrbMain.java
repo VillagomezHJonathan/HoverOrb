@@ -135,10 +135,38 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 			liveScoreFont.draw(gameStage.getBatch(), String.valueOf(currentScore), 30f, screenHeight - 30f);
 		}
 		gameStage.getBatch().end();
+		ballMovement();
+		ballGameState();
+		ballBoundaries();
+		ballAnimation();
+
+		settingsStage.draw();
+
+		themesStage.draw();
+
+		endStage.draw();
+	}
+
+	public void ballBoundaries() {
+		if (ball.getY() + ball.getHeight() > screenHeight) {
+			velocityY *= -1f;
+		} else if (ball.getX() + ball.getWidth() > screenWidth) {
+			velocityX *= -1f;
+			ballX -= 1f;
+		} else if (ball.getX() <= 0f) {
+			velocityX *= -1f;
+			ballX += 1f;
+		}
+	}
+
+	public void ballMovement() {
 		velocityY += gravity;
 		ballY -= velocityY;
 		ballX += velocityX;
 		ball.setPosition(ballX, ballY);
+	}
+
+	public void ballGameState() {
 		if (gameState == 0) {
 			gameStage.addActor(pauseBtn);
 			currentScore = 0;
@@ -152,15 +180,9 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 			goToEnd();
 			gameState = 0;
 		}
-		if (ball.getY() + ball.getHeight() > screenHeight) {
-			velocityY *= -1f;
-		} else if (ball.getX() + ball.getWidth() > screenWidth) {
-			velocityX *= -1f;
-			ballX -= 1f;
-		} else if (ball.getX() <= 0f) {
-			velocityX *= -1f;
-			ballX += 1f;
-		}
+	}
+
+	public void ballAnimation() {
 		RotateByAction rotateLeft = new RotateByAction();
 		rotateLeft.setAmount(4f);
 		RotateByAction rotateRight = new RotateByAction();
@@ -176,12 +198,6 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 				ball.removeAction(rotateLeft);
 			}
 		}
-
-		settingsStage.draw();
-
-		themesStage.draw();
-
-		endStage.draw();
 	}
 
 	@Override
