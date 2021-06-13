@@ -4,7 +4,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
@@ -21,7 +23,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	Actor ball;
 	Actor pauseBtn;
 	BitmapFont liveScoreFont;
-	int scoreFontSize;
+	int liveScoreFontSize;
 	int gameState;
 	int currentScore;
 	int maxVelocityX;
@@ -41,6 +43,17 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	ThemesStage themesStage;
 
 	EndStage endStage;
+	BitmapFont menuFont;
+	BitmapFont menuScoreFont;
+	GlyphLayout highestTextLayout;
+	GlyphLayout scoreTextLayout;
+	GlyphLayout newHighestTextLayout;
+	Vector2 highestTextVector;
+	Vector2 scoreTextVector;
+	Vector2 newHighestTextVector;
+	int menuFontSize;
+	int menuScoreFontSize;
+	int topScore;
 
 	Texture playBtnTexture;
 	Texture settingsBtnTexture;
@@ -68,12 +81,33 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 		/* FONTS */
 		liveScoreFont = new BitmapFont();
-		scoreFontSize = 200;
+		liveScoreFontSize = 200;
+		menuScoreFont = new BitmapFont();
+		menuScoreFontSize = 350;
+		menuFont = new BitmapFont();
+		menuFontSize = 350;
+
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = scoreFontSize;
+
+		parameter.size = liveScoreFontSize;
 		liveScoreFont = generator.generateFont(parameter);
+
+		parameter.size = menuScoreFontSize;
+		menuScoreFont = generator.generateFont(parameter);
+
+		parameter.size = menuFontSize;
+		menuFont = generator.generateFont(parameter);
 		generator.dispose();
+
+		highestTextLayout = new GlyphLayout(menuFont, "Highest");
+		highestTextVector = new Vector2(highestTextLayout.width, highestTextLayout.height);
+
+		scoreTextLayout = new GlyphLayout(menuFont, "Score");
+		scoreTextVector = new Vector2(scoreTextLayout.width, scoreTextLayout.height);
+
+		newHighestTextLayout = new GlyphLayout(menuFont, "New Highest!");
+		newHighestTextVector = new Vector2(newHighestTextLayout.width, newHighestTextLayout.height);
 
 		/* STAGES */
 		startStage = new StartStage(playBtnTexture, settingsBtnTexture,
@@ -151,6 +185,16 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		themesStage.draw();
 
 		endStage.draw();
+		if (endStage.isVisible()) {
+			endStage.getBatch().begin();
+			menuFont.draw(endStage.getBatch(), "Score", screenWidth / 2 - scoreTextVector.x / 2,
+					screenHeight - scoreTextVector.y / 2);
+
+			menuFont.draw(endStage.getBatch(), "Highest", screenWidth / 2 - highestTextVector.x / 2,
+					screenHeight - screenHeight / 3);
+
+			endStage.getBatch().end();
+		}
 	}
 
 	public void ballBoundaries() {

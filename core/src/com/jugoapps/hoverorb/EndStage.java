@@ -17,7 +17,7 @@ public class EndStage extends Stage {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.top();
+        table.bottom();
 
         Image homeBtn = new Image(homeBtnTexture);
         homeBtn.addListener(new ClickListener() {
@@ -53,5 +53,9 @@ public class EndStage extends Stage {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public boolean isVisible() {
+        return this.visible;
     }
 }
