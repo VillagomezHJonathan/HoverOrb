@@ -2,6 +2,7 @@ package com.jugoapps.hoverorb;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.Random;
 
 public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
+
+	Preferences prefs;
 
 	StartStage startStage;
 
@@ -48,9 +51,13 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 	GlyphLayout highestTextLayout;
 	GlyphLayout scoreTextLayout;
 	GlyphLayout newHighestTextLayout;
+	GlyphLayout scoreIntLayout;
+	GlyphLayout topScoreIntLayout;
 	Vector2 highestTextVector;
 	Vector2 scoreTextVector;
 	Vector2 newHighestTextVector;
+	Vector2 scoreIntVector;
+	Vector2 topScoreIntVector;
 	int menuFontSize;
 	int menuScoreFontSize;
 	int topScore;
@@ -141,8 +148,8 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 					currentScore++;
 				}
 
-				gameState = 1;
 				pauseBtn.remove();
+				gameState = 1;
 
 				velocityY = -forceY;
 
@@ -158,6 +165,9 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 				return true;
 			}
 		});
+
+		prefs = Gdx.app.getPreferences("prefs");
+		topScore = prefs.getInteger("topScore");
 	}
 
 	@Override
@@ -175,9 +185,10 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 				liveScoreFont.draw(gameStage.getBatch(), String.valueOf(currentScore), 30f, screenHeight - 30f);
 			}
 			gameStage.getBatch().end();
+
 			ballGameStateCheck();
 			ballBoundaries();
-			ballAnimation();
+			ballAirAnimation();
 		}
 
 		settingsStage.draw();
@@ -186,12 +197,41 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 
 		endStage.draw();
 		if (endStage.isVisible()) {
-			endStage.getBatch().begin();
-			menuFont.draw(endStage.getBatch(), "Score", screenWidth / 2 - scoreTextVector.x / 2,
-					screenHeight - scoreTextVector.y / 2);
+			scoreIntLayout = new GlyphLayout(menuScoreFont, String.valueOf(currentScore));
+			scoreIntVector = new Vector2(scoreIntLayout.width, scoreIntLayout.height);
 
-			menuFont.draw(endStage.getBatch(), "Highest", screenWidth / 2 - highestTextVector.x / 2,
-					screenHeight - screenHeight / 3);
+			topScoreIntLayout = new GlyphLayout(menuScoreFont, String.valueOf(topScore));
+			topScoreIntVector = new Vector2(topScoreIntLayout.width, topScoreIntLayout.height);
+
+			if (currentScore > topScore) {
+				topScore = currentScore;
+				prefs.putInteger("topScore", topScore);
+				prefs.flush();
+			}
+
+			endStage.getBatch().begin();
+
+			menuFont.draw(endStage.getBatch(), "Score",
+					screenWidth / 2f - scoreTextVector.x / 2f,
+					screenHeight - scoreTextVector.y / 2f);
+
+			menuScoreFont.draw(endStage.getBatch(), String.valueOf(currentScore),
+					screenWidth / 2 - scoreIntVector.x  / 2f,
+					screenHeight - scoreTextVector.y / 2f - scoreIntVector.y);
+
+			if (currentScore < topScore) {
+				menuFont.draw(endStage.getBatch(), "Highest",
+						screenWidth / 2f - highestTextVector.x / 2f,
+						screenHeight - screenHeight / 3f);
+			} else if (currentScore > topScore) {
+				menuFont.draw(endStage.getBatch(), "New Highest!",
+						screenWidth / 2f - newHighestTextVector.x / 2f,
+						screenHeight - screenHeight / 3f);
+			}
+
+			menuScoreFont.draw(endStage.getBatch(), String.valueOf(topScore),
+					screenWidth / 2 - topScoreIntVector.x / 2,
+					screenHeight - screenHeight / 3 - topScoreIntVector.y);
 
 			endStage.getBatch().end();
 		}
@@ -232,7 +272,7 @@ public class HoverOrbMain extends ApplicationAdapter implements StageInterface {
 		}
 	}
 
-	public void ballAnimation() {
+	public void ballAirAnimation() {
 		RotateByAction rotateLeft = new RotateByAction();
 		rotateLeft.setAmount(4f);
 		RotateByAction rotateRight = new RotateByAction();
