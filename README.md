@@ -1,3 +1,0 @@
-# HoverOrb
-
-Keepy-up game
